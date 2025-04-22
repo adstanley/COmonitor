@@ -1,10 +1,10 @@
 # CO Sensor Monitoring System
 
 ## Overview
-This project implements a carbon monoxide (CO) and air quality monitoring system using MQ135 gas sensors and DHT22 temperature/humidity sensors on a Raspberry Pi Pico or other MicroPython-compatible microcontroller. The system can operate standalone or as part of a wireless sensor network using XBee modules.
+This project implements a carbon monoxide (CO) and air quality monitoring system using MQ135 gas sensors and DHT22 temperature/humidity sensors on a Raspberry Pi Pico or other MicroPython-compatible microcontroller. The system can operate standalone or as part of a wireless sensor network using XBee modules. This sensor node is designed to send data to the [CO Monitoring Gateway](https://github.com/yourusername/co-monitoring-gateway) repository which handles data collection, visualization, and alerts.
 
 ## Features
-- High-precision CO and air quality monitoring using MQ135 gas sensors
+- Cost-effective CO and air quality monitoring using MQ135 gas sensors
 - Temperature and humidity measurement with DHT22 sensors
 - Temperature and humidity compensation for improved accuracy
 - Sensor calibration capabilities
@@ -50,6 +50,15 @@ update_time = 1
 # Enable/disable data transmission
 transmit = True  # Set to False for local monitoring only
 ```
+
+## Code Structure
+The codebase is organized with a clean, modular structure to make it easy to understand and extend. You can view an interactive visualization of the code structure [here](./Structure.html).
+
+Key classes include:
+- `MQ135`: Handles gas detection with temperature/humidity compensation
+- `EnhancedDHT22`: Provides reliable temperature and humidity readings
+- `Node`: Coordinates readings between sensors and handles data presentation
+- `APISend`: Manages XBee wireless communication
 
 ## Classes and Functionality
 
@@ -107,11 +116,27 @@ For operation with data transmission to a coordinator/gateway:
 transmit = True
 ```
 
+### Integration with CO Monitoring Gateway
+This sensor node sends data to the [CO Monitoring Gateway](https://github.com/yourusername/co-monitoring-gateway) which provides:
+
+- Data collection from multiple sensor nodes
+- Web dashboard for real-time monitoring
+- Historical data storage and visualization
+- Alert system for dangerous CO levels
+- API for third-party integrations
+
+See the [CO Monitoring Gateway documentation](https://github.com/yourusername/co-monitoring-gateway/blob/main/README.md) for setup instructions to complete your monitoring network.
+
 ### Data Format
 When transmitting, data is sent in the following format:
 ```
 DATA:TEMP:23.50,HUM:45.20,PPM:432.15
 ```
+
+### Example Output
+Below is an example of the system output showing sensor readings and XBee API frame details:
+
+![Example Output](images/example_output.png)
 
 ## Troubleshooting
 - If you encounter "Input/output error" messages, check your hardware connections
@@ -128,4 +153,4 @@ The codebase is designed to be modular and extensible. Key areas for customizati
 ## License
 MIT
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details

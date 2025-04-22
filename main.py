@@ -1,5 +1,5 @@
 """
-MQ135/DHT22 example for MicroPython 
+Micropython implementation of a CO monitor using cheap MQ135 and DHT22 sensors
 """
 
 from machine import Pin, ADC, UART
@@ -9,7 +9,13 @@ import time
 import math
 
 class MQ135():
-    """ Class for dealing with MQ135 Gas Sensors with improved accuracy """
+    """ 
+    Class for dealing with MQ135 Gas Sensors with improved accuracy 
+    This class provides methods for reading sensor values, calibrating, and calculating PPM
+    It also includes methods for temperature and humidity correction, digital output handling,
+    
+    #TODO: lots of redundant methods from debugging RZERO, clean up later
+    """
     # Constants for MQ135 sensor
     # Load resistance in kOhms
     # This is the resistance of the load resistor used in the voltage divider circuit
@@ -344,7 +350,10 @@ class MQ135():
         return debug_info
 
 class EnhancedDHT22:
-    """Enhanced DHT22 sensor implementation with additional features"""
+    """
+    Enhanced DHT22 sensor implementation with additional features
+    This class provides improved error handling, retry logic, and temperature/humidity reading methods
+    """
     
     def __init__(self, pin):
         """Initialize the DHT22 sensor"""
@@ -395,7 +404,13 @@ class EnhancedDHT22:
         return self.last_humidity
 
 class Node(MQ135, EnhancedDHT22):
-    """ Local class for dealing with sensors """
+    """ 
+    Local class for dealing with sensors 
+    
+    This class combines the MQ135 and enhanced DHT22 sensor functionalities
+    
+    #TODO: maybe remove this class and just use the two sensor classes directly
+    """
 
     def __init__(self, mq135, dht22):
         """Initialize MQ135 and enhanced DHT22 sensors"""
@@ -429,7 +444,7 @@ class Node(MQ135, EnhancedDHT22):
         }
         return values
 
-    def print_sensor_data(self):
+    def print_sensor_data_old(self):
         """Print current temperature, humidity and MQ135 readings"""
         values = self.read_mq135_values()
         
@@ -451,6 +466,63 @@ class Node(MQ135, EnhancedDHT22):
         print(f"Resistance: {values['resistance']:.2f}\tPPM: {values['ppm']:.2f}")
         print(f"Corrected PPM: {values['corrected_ppm']:.2f} ppm")
         print("=========================================\n")
+
+    def print_sensor_data(self):
+        """Print current temperature, humidity and MQ135 readings with consistent formatting"""
+        values = self.read_mq135_values()
+        
+        # Check for error values
+        if values['resistance'] <= 0:
+            print("Error: Invalid resistance reading")
+            return
+        if values['ppm'] <= 0:
+            print("Error: Invalid PPM reading")
+            return
+        
+        # Calculate the width needed for consistent display
+        total_width = 54  # Set fixed width
+        
+        # Create borders and format the output
+        border = "+" + "-" * (total_width - 2) + "+"
+        
+        # Print sensor data with consistent formatting
+        print(border)
+        
+        # DHT22 section
+        section_title = "DHT22 Sensor Data"
+        padding = total_width - len(section_title) - 4  # -4 for "| " and " |"
+        left_padding = padding // 2
+        right_padding = padding - left_padding
+        print("| " + " " * left_padding + section_title + " " * right_padding + " |")
+        
+        # DHT22 data
+        dht_data = f"Temperature: {self.temperature:.2f}C    Humidity: {self.humidity:.2f}%"
+        dht_padding = total_width - len(dht_data) - 4
+        print("| " + dht_data + " " * dht_padding + " |")
+        
+        print(border)
+        
+        # MQ135 section
+        section_title = "MQ135 Sensor Data"
+        padding = total_width - len(section_title) - 4
+        left_padding = padding // 2
+        right_padding = padding - left_padding
+        print("| " + " " * left_padding + section_title + " " * right_padding + " |")
+        
+        # MQ135 data lines - format each line separately to avoid unpacking errors
+        rzero_line = f"RZero: {values['rzero']:.2f}    Corrected RZero: {values['corrected_rzero']:.2f}"
+        rzero_padding = total_width - len(rzero_line) - 4
+        print("| " + rzero_line + " " * rzero_padding + " |")
+        
+        resistance_line = f"Resistance: {values['resistance']:.2f}    PPM: {values['ppm']:.2f}"
+        resistance_padding = total_width - len(resistance_line) - 4
+        print("| " + resistance_line + " " * resistance_padding + " |")
+        
+        corrected_ppm_line = f"Corrected PPM: {values['corrected_ppm']:.2f} ppm"
+        corrected_ppm_padding = total_width - len(corrected_ppm_line) - 4
+        print("| " + corrected_ppm_line + " " * corrected_ppm_padding + " |")
+        
+        print(border)
 
     def continuous_monitoring(self, update_interval=2, use_dht=True, transmit=False, xbee=None):
         """Continuously monitor and print sensor values, optionally transmit data
@@ -530,6 +602,7 @@ class APISend:
     
     def _calculate_checksum(self, data):
         """Calculate the checksum for an API frame"""
+
         # Sum all the bytes in the frame data
         total = sum(data)
         # Return the lowest 8 bits of the sum, then subtract from 0xFF
@@ -537,6 +610,7 @@ class APISend:
     
     def _escape_data(self, data):
         """Escape special bytes in API data"""
+
         escaped = bytearray()
         for byte in data:
             # If the byte needs to be escaped (is a special character)
@@ -580,7 +654,8 @@ class APISend:
         frame.append(checksum)  # Checksum
         
         return frame
-    
+        
+    # TODO: combine these three api send methods into one
     def simple_api_send_with_address(self, data_string, use_64bit=False):
         """XBee API frame send with proper checksum calculation
         
@@ -787,12 +862,8 @@ class APISend:
         frame_data.append(0x01)
         
         # Destination address (64-bit address)
-        # Sink Address = ([0x00, 0x13, 0xA2, 0x00, 0x42, 0x01, 0x09, 0x17])
-        # Source A = ([0x00, 0x13, 0xA2, 0x00, 0x42, 0x01, 0x09, 0x19])
-        # Source B = ([0x00, 0x13, 0xA2, 0x00, 0x42, 0x01, 0x08, 0xEB])
-        # frame_data.extend([0x00, 0x13, 0xA2, 0x00, 0x42, 0x01, 0x09, 0x17])
+        # Sink Address = ([0x00, 0x13, 0xA2, 0x00, 0x42, 0x01, 0x09, 0x17]) 
         # 00 13 A2 00 42 01 09 17
-
         frame_data.append(0x00)
         frame_data.append(0x13)
         frame_data.append(0xA2)
@@ -831,19 +902,12 @@ class APISend:
             checksum += b
         checksum = 0xFF - (checksum & 0xFF)
         frame.append(checksum)
-        
-        # Print frame for debugging - this helps verify the frame structure
-        print(f"Start delimiter: 0x{frame[0]:02X}")
-        print(f"Length: {length} bytes (0x{frame[1]:02X} 0x{frame[2]:02X})")
-        print(f"Frame type: 0x{frame[3]:02X}")
-        print(f"Frame ID: 0x{frame[4]:02X}")
-        print(f"64-bit Destination: 0x{frame[5]:02X}{frame[6]:02X}{frame[7]:02X}{frame[8]:02X}{frame[9]:02X}{frame[10]:02X}{frame[11]:02X}{frame[12]:02X}")
-        print(f"16-bit Address: 0x{frame[13]:02X}{frame[14]:02X}")
-        print(f"Broadcast Radius: 0x{frame[15]:02X}")
-        print(f"Options: 0x{frame[16]:02X}")
-        print(f"Data: {data_string}")
-        print(f"Checksum: 0x{checksum:02X}")
-        print(f"Complete frame: {[hex(b) for b in frame]}")
+
+        # Use the formatter instead of multiple print statements
+        # TODO: change to look for diagnostic output flag
+        if True:
+            formatter = XBeeFrameFormatter(frame)
+            print(formatter.format_pretty())
 
         # Send the frame
         try:
@@ -900,6 +964,7 @@ class APISend:
         # Return frame ID for tracking response
         return frame_id
 
+    # TODO: remove
     def send_data_works(self, data, dest_addr=None):
         """Send data using a Transmit Request frame
         
@@ -979,110 +1044,203 @@ class APISend:
         self.uart.deinit()
         print("UART closed")
 
-def test_uart_communication(uart_id=0, baudrate=9600, tx_pin=0, rx_pin=1, test_message="UART TEST"):
+class XBeeFrameFormatter:
     """
-    Test UART communication by sending a test message and checking for responses
-    
-    Args:
-        uart_id: UART interface ID
-        baudrate: Baud rate for communication
-        tx_pin: TX pin number
-        rx_pin: RX pin number
-        test_message: Message to send for testing
+    Format and display XBee API frames
+    TODO: Vibe Coded, clean up later
     """
-    import time
-    from machine import UART
     
-    print(f"Initializing UART test (ID: {uart_id}, Baud: {baudrate}, TX: {tx_pin}, RX: {rx_pin})...")
+    def __init__(self, frame_data=None):
+        """Initialize with optional frame data"""
+        self.frame_data = frame_data
+        self.diag = False  # Debug flag for detailed output
     
-    # Initialize UART
-    uart = UART(uart_id, 
-               baudrate=baudrate, 
-               bits=8,
-               parity=None,
-               stop=1,
-               tx=tx_pin, 
-               rx=rx_pin,
-               timeout=1000)
+    def parse_from_hex_list(self, hex_list: list[str]) -> 'XBeeFrameFormatter':
+        """Parse frame from a list of hex strings"""
+        # Convert hex strings to bytes
+        self.frame_data = bytearray()
+        for hex_str in hex_list:
+            # Remove '0x' prefix if present and convert to integer
+            if hex_str.startswith('0x'):
+                hex_str = hex_str[2:]
+            self.frame_data.append(int(hex_str, 16))
+        return self
     
-    try:
-        # Clear any pending data
-        pending = uart.any()
-        if pending:
-            print(f"Clearing {pending} bytes from buffer")
-            uart.read()
+    def parse_api_frame(self):
+        """Parse the frame into components"""
+        if not self.frame_data or len(self.frame_data) < 5:
+            return "Invalid frame: too short"
+            
+        # Basic frame parsing
+        start_delimiter = self.frame_data[0]
+        length_msb = self.frame_data[1]
+        length_lsb = self.frame_data[2]
+        frame_length = (length_msb << 8) | length_lsb
         
-        # Test loop
-        counter = 1
-        max_tests = 5
+        # Verify expected frame length
+        expected_total_length = frame_length + 4  # Start delimiter + 2 length bytes + data + checksum
+        if len(self.frame_data) != expected_total_length:
+            return f"Warning: Expected total length {expected_total_length}, got {len(self.frame_data)}"
         
-        print(f"\nStarting UART test - will send {max_tests} messages with 2 second intervals")
-        print("Press Ctrl+C to stop the test")
+        # Extract frame components
+        frame_type = self.frame_data[3]
+        frame_id = self.frame_data[4]
         
-        while counter <= max_tests:
-            # Create test message with counter
-            message = f"{test_message} #{counter}"
-            message_bytes = message.encode('utf-8')
+        # For Transmit Request (0x10) frames
+        if frame_type == 0x10:
+            # 64-bit address (8 bytes)
+            addr64 = self.frame_data[5:13]
+            # 16-bit address (2 bytes)
+            addr16 = self.frame_data[13:15]
+            # Broadcast radius and options
+            broadcast_radius = self.frame_data[15]
+            options = self.frame_data[16]
             
-            # Send message
-            print(f"\nTest {counter}/{max_tests}: Sending: '{message}'")
-            bytes_written = uart.write(message_bytes)
-            print(f"Bytes written: {bytes_written}")
+            # RF Data
+            rf_data = self.frame_data[17:-1]
             
-            # Listen for response with timeout
-            print("Waiting for response (3 seconds)...")
+            # Checksum
+            checksum = self.frame_data[-1]
             
-            # Set timeout time
-            timeout_time = time.time() + 3
-            response = b""
+            # Try to decode RF data as UTF-8 if possible
+            try:
+                rf_data_str = rf_data.decode('utf-8')
+            except UnicodeDecodeError:
+                rf_data_str = "Non-printable data"
             
-            # Read with timeout
-            while time.time() < timeout_time:
-                if uart.any():
-                    new_data = uart.read()
-                    if new_data:
-                        response += new_data
-                        print(f"Received {len(new_data)} bytes")
-                
-                # Short delay to prevent tight loop
-                time.sleep(0.1)
-                
-                # If we've received a full response, we can stop waiting
-                if response and not uart.any():
-                    break
-            
-            # Display results
-            if response:
-                try:
-                    decoded = response.decode('utf-8')
-                    print(f"Response received: '{decoded}'")
-                except UnicodeError:
-                    print(f"Raw response (could not decode): {response}")
+            # Create formatted output
+            return {
+                "start_delimiter": f"0x{start_delimiter:02X}",
+                "length": f"{frame_length} bytes (0x{length_msb:02X} 0x{length_lsb:02X})",
+                "frame_type": f"0x{frame_type:02X} (Transmit Request)",
+                "frame_id": f"0x{frame_id:02X}",
+                "64bit_dest": f"0x{''.join('%02X' % b for b in addr64)}",
+                "16bit_dest": f"0x{''.join('%02X' % b for b in addr16)}",
+                "broadcast_radius": f"0x{broadcast_radius:02X}",
+                "options": f"0x{options:02X}",
+                "data": rf_data_str,
+                "data_hex": " ".join(f"0x{b:02X}" for b in rf_data),
+                "checksum": f"0x{checksum:02X}"
+            }
+        else:
+            return f"Unsupported frame type: 0x{frame_type:02X}"
+    
+    def format_pretty(self) -> str:
+        """Format the frame data in a pretty, readable format with dynamic sizing"""
+        result = self.parse_api_frame()
+        if isinstance(result, str):
+            return result
+        
+        # Determine the maximum width needed
+        content_items = [
+            "Start Delimiter: " + result['start_delimiter'],
+            "Length:          " + result['length'],
+            "Frame Type:      " + result['frame_type'],
+            "Frame ID:        " + result['frame_id'],
+            "64-bit Dest:     " + result['64bit_dest'],
+            "16-bit Dest:     " + result['16bit_dest'],
+            "Broadcast Radius:" + result['broadcast_radius'],
+            "Options:         " + result['options'],
+            "Checksum:        " + result['checksum'],
+            result['data']
+        ]
+        
+        # Get the longest content item plus margin
+        max_content_width = max(len(item) for item in content_items) + 10
+        
+        # Ensure width is enough for hex data display
+        hex_line_width = max_content_width
+        
+        # Set total width for frame
+        total_width = max_content_width + 4  # +4 for "| " and " |"
+        
+        # Create header and section bars
+        header_bar = "+" + "-" * (total_width - 2) + "+"
+        section_title_width = total_width 
+        header_title = "| " + "XBee API Frame".center(section_title_width - 4) + " |"
+        rf_data_bar = "| " + "RF Data".center(section_title_width - 4) + " |"
+        hex_data_bar = "| " + "Hex Data".center(section_title_width - 4) + " |"
+        footer_bar = "| " + "Footer".center(section_title_width - 4) + " |"
+        
+        # Create a neatly formatted output with consistent spacing
+        output = []
+        output.append(header_bar)
+        output.append(header_title)
+        output.append(header_bar)
+        
+        # Add frame details with consistent padding
+        for label, value in [
+            ("Start Delimiter: ", result['start_delimiter']),
+            ("Length:          ", result['length']),
+            ("Frame Type:      ", result['frame_type']),
+            ("Frame ID:        ", result['frame_id']),
+            ("64-bit Dest:     ", result['64bit_dest']),
+            ("16-bit Dest:     ", result['16bit_dest']),
+            ("Broadcast Radius:", result['broadcast_radius']),
+            ("Options:         ", result['options'])
+        ]:
+            padding = total_width - len(label) - len(value) - 4  # -4 for "| " and " |"
+            output.append("| " + label + value + " " * padding + " |")
+        
+        # Add RF data section
+        output.append(header_bar)
+        output.append(rf_data_bar)
+        output.append(header_bar)
+        
+        # Format RF data with consistent padding
+        rf_data = result['data']
+        rf_data_padding = total_width - len(rf_data) - 4  # -4 for "| " and " |"
+        output.append("| " + rf_data + " " * rf_data_padding + " |")
+        
+        # Add Hex data section
+        output.append(header_bar)
+        output.append(hex_data_bar)
+        output.append(header_bar)
+        
+        # Format hex data with line breaks for readability
+        hex_data = result['data_hex']
+        max_hex_per_line = hex_line_width - 4  # -4 for "| " and " |"
+        
+        # Split the hex data by space to handle words properly
+        hex_words = hex_data.split(" ")
+        current_line = ""
+        
+        for word in hex_words:
+            # Check if adding this word would exceed the limit
+            if len(current_line + " " + word if current_line else word) <= max_hex_per_line:
+                current_line += (" " + word if current_line else word)
             else:
-                print("No response received within timeout period")
-            
-            # Increment counter and wait before next test
-            counter += 1
-            print("Waiting 2 seconds before next test...")
-            time.sleep(2)
+                # Line is full, add it and start a new one
+                padding = total_width - len(current_line) - 4
+                output.append("| " + current_line + " " * padding + " |")
+                current_line = word
         
-        print("\nUART test completed")
-    
-    except KeyboardInterrupt:
-        print("\nTest interrupted by user")
-    
-    except Exception as e:
-        print(f"Error during UART test: {e}")
-    
-    finally:
-        # Close UART
-        uart.deinit()
-        print("UART connection closed")
+        # Add the last line if there's anything remaining
+        if current_line:
+            padding = total_width - len(current_line) - 4
+            output.append("| " + current_line + " " * padding + " |")
+        
+        # Add footer
+        output.append(header_bar)
+        output.append(footer_bar)
+        output.append(header_bar)
+        
+        # Add checksum
+        checksum_label = "Checksum: "
+        checksum_value = result['checksum']
+        checksum_padding = total_width - len(checksum_label) - len(checksum_value) - 4
+        output.append("| " + checksum_label + checksum_value + " " * checksum_padding + " |")
+        
+        # Final border
+        output.append(header_bar)
+        
+        return "\n".join(output)
 
 def main():
     """Main function"""
 
-    #test_uart_communication()
+    # Set Diag flag for debugging
+    diag = True
 
     # Initialize sensors
     mq135_sensor = MQ135(0)
@@ -1137,7 +1295,7 @@ def main():
                 
                 # Format data as string
                 data_string = f"DATA:TEMP:{temperatureC:.2f},HUM:{humidity:.2f},PPM:{corrected_ppm:.2f}"
-                print(f"Sending data: {data_string}")
+                print(f"\nSending data: {data_string}\n")
                 
                 # Try the simplified approach
                 try:

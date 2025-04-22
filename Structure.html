@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Code Structure: .\Pi Pico\CO_Sensor\main.py</title>
+    <style>
+        /* Solarized color palette */
+        :root {
+            --base03: #002b36;  /* Dark background */
+            --base02: #073642;  /* Dark highlight */
+            --base01: #586e75;  /* Content */
+            --base00: #657b83;  /* Content */
+            --base0: #839496;   /* Content */
+            --base1: #93a1a1;   /* Content */
+            --base2: #eee8d5;   /* Light background */
+            --base3: #fdf6e3;   /* Light highlight */
+            --yellow: #b58900;  /* Accent */
+            --orange: #cb4b16;  /* Accent */
+            --red: #dc322f;     /* Accent */
+            --magenta: #d33682; /* Accent */
+            --violet: #6c71c4;  /* Accent */
+            --blue: #268bd2;    /* Accent */
+            --cyan: #2aa198;    /* Accent */
+            --green: #859900;   /* Accent */
+        }
+        
+        body {
+            font-family: 'Menlo', 'DejaVu Sans Mono', 'Consolas', monospace;
+            background-color: var(--base03);
+            color: var(--base0);
+            padding: 20px;
+            margin: 0;
+            line-height: 1.5;
+        }
+        .container {
+            background-color: var(--base02);
+            border: 1px solid var(--base01);
+            border-radius: 5px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: var(--base1);
+            border-bottom: 1px solid var(--base01);
+            padding-bottom: 10px;
+            font-size: 1.8em;
+        }
+        pre {
+            white-space: pre-wrap;
+            font-family: 'Menlo', 'DejaVu Sans Mono', 'Consolas', monospace;
+            line-height: 1.5;
+            font-size: 14px;
+            padding: 10px;
+            background-color: var(--base03);
+            border-radius: 5px;
+            overflow-x: auto;
+        }
+        footer {
+            margin-top: 20px;
+            color: var(--base01);
+            font-size: 0.9em;
+            text-align: right;
+        }
+        /* Light theme toggle */
+        .theme-toggle {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        .theme-toggle label {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            color: var(--base1);
+        }
+        .theme-toggle input {
+            margin-right: 8px;
+        }
+        /* Dark theme (default) */
+        .dark-theme {
+            /* Already set in :root */
+        }
+        /* Light theme */
+        .light-theme {
+            --base03: #fdf6e3;  /* Light highlight becomes dark background */
+            --base02: #eee8d5;  /* Light background becomes dark highlight */
+            --base01: #93a1a1;  /* Content */
+            --base00: #839496;  /* Content */
+            --base0: #657b83;   /* Content */
+            --base1: #586e75;   /* Content */
+            --base2: #073642;   /* Dark highlight becomes light background */
+            --base3: #002b36;   /* Dark background becomes light highlight */
+            /* Accent colors remain the same */
+        }
+    </style>
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle('light-theme');
+            const themeLabel = document.getElementById('theme-label');
+            if (document.body.classList.contains('light-theme')) {
+                themeLabel.textContent = 'Switch to Dark Theme';
+            } else {
+                themeLabel.textContent = 'Switch to Light Theme';
+            }
+        }
+    </script>
+</head>
+<body class="dark-theme">
+    <div class="container">
+        <div class="theme-toggle">
+            <label for="theme-switch">
+                <input type="checkbox" id="theme-switch" onClick="toggleTheme()">
+                <span id="theme-label">Switch to Light Theme</span>
+            </label>
+        </div>
+        <h1>Python Code Structure: .\Pi Pico\CO_Sensor\main.py</h1>
+        <pre><span style="color:#268bd2;font-weight:bold">class</span> <span style="color:#6c71c4;font-weight:bold">MQ135</span>
+└── <span style="color:#b58900;font-style:italic">"Class for dealing with MQ135 Gas Sens..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">__init__</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">analog_pin</span>, <span style="color:#2aa198">digital_pin</span>, <span style="color:#2aa198">adc_offset</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Initialize MQ135 sensor interface"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">set_debug</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">enable</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Enable or disable debug output"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">calibrate_offset</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">num_samples</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Calibrate the ADC offset by reading t..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">read_raw</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Read raw ADC value with oversampling ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_voltage</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Read voltage across the sensor with i..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">_get_resistance</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Returns the resistance of the sensor ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">_get_correction_factor</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">temperature</span>, <span style="color:#2aa198">humidity</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Calculates the correction factor for ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_corrected_resistance</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">temperature</span>, <span style="color:#2aa198">humidity</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Gets the resistance of the sensor cor..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_rzero</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Returns the resistance RZero of the s..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_corrected_rzero</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">temperature</span>, <span style="color:#2aa198">humidity</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Returns the RZero of the sensor (in k..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">update_rzero</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">temperature</span>, <span style="color:#2aa198">humidity</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Update RZERO with a moving average"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_ppm</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Returns the ppm of CO2 sensed (assumi..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_corrected_ppm</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">temperature</span>, <span style="color:#2aa198">humidity</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Returns the ppm of CO2 sensed (assumi..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">is_danger</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Check if the digital danger pin is in..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_danger_level</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Get a descriptive danger level based ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">is_connected</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Check if sensor appears to be connect..."</span>
+└── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">get_debug_info</span>(<span style="color:#2aa198">self</span>)
+    └── <span style="color:#b58900;font-style:italic">"Get all sensor readings for debugging"</span>
+<span style="color:#268bd2;font-weight:bold">class</span> <span style="color:#6c71c4;font-weight:bold">EnhancedDHT22</span>
+└── <span style="color:#b58900;font-style:italic">"Enhanced DHT22 sensor implementation ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">__init__</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">pin</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Initialize the DHT22 sensor"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">read</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Read temperature and humidity with re..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">temperature</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Get the last successful temperature r..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">temperature_celsius</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Get the last successful temperature r..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">temperature_fahrenheit</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Get the last successful temperature r..."</span>
+└── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">humidity</span>(<span style="color:#2aa198">self</span>)
+    └── <span style="color:#b58900;font-style:italic">"Get the last successful humidity reading"</span>
+<span style="color:#268bd2;font-weight:bold">class</span> <span style="color:#6c71c4;font-weight:bold">Node</span>(<span style="color:#cb4b16">MQ135</span>, <span style="color:#cb4b16">EnhancedDHT22</span>)
+└── <span style="color:#b58900;font-style:italic">"Local class for dealing with sensors "</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">__init__</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">mq135</span>, <span style="color:#2aa198">dht22</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Initialize MQ135 and enhanced DHT22 s..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">update_environment_data</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Update temperature and humidity from ..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">read_mq135_values</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Read all values from MQ135 sensor"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">print_sensor_data_old</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Print current temperature, humidity a..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">print_sensor_data</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Print current temperature, humidity a..."</span>
+└── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">continuous_monitoring</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">update_interval</span>, <span style="color:#2aa198">use_dht</span>, <span style="color:#2aa198">transmit</span>, <span style="color:#2aa198">xbee</span>)
+    └── <span style="color:#b58900;font-style:italic">"Continuously monitor and print sensor..."</span>
+<span style="color:#268bd2;font-weight:bold">class</span> <span style="color:#6c71c4;font-weight:bold">APISend</span>
+└── <span style="color:#b58900;font-style:italic">"Class for handling XBee communication..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">__init__</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">uart_id</span>, <span style="color:#2aa198">baudrate</span>, <span style="color:#2aa198">tx_pin</span>, <span style="color:#2aa198">rx_pin</span>, <span style="color:#2aa198">dest_addr</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Initialize UART communication for XBe..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">_calculate_checksum</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Calculate the checksum for an API frame"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">_escape_data</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Escape special bytes in API data"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">_create_api_frame</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">frame_type</span>, <span style="color:#2aa198">frame_data</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Create a complete API frame with prop..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">simple_api_send_with_address</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data_string</span>, <span style="color:#2aa198">use_64bit</span>)
+│   └── <span style="color:#b58900;font-style:italic">"XBee API frame send with proper check..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">simple_api_send</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data_string</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Most basic XBee API frame send possib..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">simple_api_send_64bit</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data_string</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Most basic XBee API frame send possib..."</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">send_at_command</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">command</span>, <span style="color:#2aa198">parameter</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Send an AT command to the XBee"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">send_data_works</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">data</span>, <span style="color:#2aa198">dest_addr</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Send data using a Transmit Request frame"</span>
+└── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">close</span>(<span style="color:#2aa198">self</span>)
+    └── <span style="color:#b58900;font-style:italic">"Close UART connection"</span>
+<span style="color:#268bd2;font-weight:bold">class</span> <span style="color:#6c71c4;font-weight:bold">XBeeFrameFormatter</span>
+└── <span style="color:#b58900;font-style:italic">"Format and display XBee API frames"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">__init__</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">frame_data</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Initialize with optional frame data"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">parse_from_hex_list</span>(<span style="color:#2aa198">self</span>, <span style="color:#2aa198">hex_list</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Parse frame from a list of hex strings"</span>
+├── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">parse_api_frame</span>(<span style="color:#2aa198">self</span>)
+│   └── <span style="color:#b58900;font-style:italic">"Parse the frame into components"</span>
+└── <span style="color:#859900;font-weight:bold">def</span> <span style="color:#6c71c4;font-weight:bold">format_pretty</span>(<span style="color:#2aa198">self</span>)
+    └── <span style="color:#b58900;font-style:italic">"Format the frame data in a pretty, re..."</span>
+<span style="color:#859900;font-weight:bold">function</span> <span style="color:#6c71c4;font-weight:bold">main</span>()
+└── <span style="color:#b58900;font-style:italic">"Main function"</span></pre>
+        <footer>Generated on 2025-04-22 10:27:46</footer>
+    </div>
+</body>
+</html>
