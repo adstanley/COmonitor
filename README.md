@@ -1,7 +1,7 @@
 # CO Sensor Monitoring System
 
 ## Overview
-This project implements a carbon monoxide (CO) and air quality monitoring system using MQ135 gas sensors and DHT22 temperature/humidity sensors on a Raspberry Pi Pico or other MicroPython-compatible microcontroller. The system can operate standalone or as part of a wireless sensor network using XBee modules. This sensor node is designed to send data to the [CO Monitoring Gateway](https://github.com/yourusername/co-monitoring-gateway) repository which handles data collection, visualization, and alerts.
+This project implements a carbon monoxide (CO) and air quality monitoring system using MQ135 gas sensors and DHT22 temperature/humidity sensors on a Raspberry Pi Pico or other MicroPython-compatible microcontroller. The system can operate standalone or as part of a wireless sensor network using XBee modules. This sensor node is designed to send data to the [CO Monitoring Gateway](https://github.com/adstanley/CO-Monitor-Gateway) repository which handles data collection, visualization, and alerts.
 
 ## Features
 - Cost-effective CO and air quality monitoring using MQ135 gas sensors
