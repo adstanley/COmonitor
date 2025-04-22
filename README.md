@@ -117,7 +117,7 @@ transmit = True
 ```
 
 ### Integration with CO Monitoring Gateway
-This sensor node sends data to the [CO Monitoring Gateway](https://github.com/yourusername/co-monitoring-gateway) which provides:
+This sensor node sends data to the [CO Monitoring Gateway](https://github.com/adstanley/CO-Monitor-Gateway) which provides:
 
 - Data collection from multiple sensor nodes
 - Web dashboard for real-time monitoring
@@ -125,7 +125,7 @@ This sensor node sends data to the [CO Monitoring Gateway](https://github.com/yo
 - Alert system for dangerous CO levels
 - API for third-party integrations
 
-See the [CO Monitoring Gateway documentation](https://github.com/yourusername/co-monitoring-gateway/blob/main/README.md) for setup instructions to complete your monitoring network.
+See the [CO Monitoring Gateway documentation](https://github.com/adstanley/CO-Monitor-Gateway) for setup instructions to complete your monitoring network.
 
 ### Data Format
 When transmitting, data is sent in the following format:
