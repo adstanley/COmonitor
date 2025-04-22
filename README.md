@@ -52,7 +52,7 @@ transmit = True  # Set to False for local monitoring only
 ```
 
 ## Code Structure
-The codebase is organized with a modular structure to make it easier to comprehend and extend. You can view an interactive visualization of the code structure [here](https://htmlpreview.github.io/?https://github.com/yourusername/repository-name/blob/main/Structure.html).
+The codebase is organized with a modular structure to make it easier to comprehend and extend. You can view an interactive visualization of the code structure [here](https://htmlpreview.github.io/?https://github.com/adstanley/COmonitor/blob/main/Structure.html).
 
 Key classes include:
 - `MQ135`: Handles gas detection with temperature/humidity compensation
